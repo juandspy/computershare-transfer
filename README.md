@@ -40,6 +40,22 @@ ACCOUNT_NUMBER=X12345678
 
 ### Usage
 
+#### Check for new shares
+
+You can check your shares by running `python get_shares.py`. If you want to
+run it periodically and send you a Telegram message, you can configure crontab:
+
+1. Open the terminal and edit the crontab:
+```
+crontab -e
+```
+2. Add the cron job to run the script from the folder where your .env file is
+   located. For example, if your script is in /path/to/folder, you can add:
+```
+   0 8 * * * cd /path/to/folder && /usr/bin/python3 notify_new_shares.py >> logfile.log 2>&1
+```
+3. This would run the script every day at 8AM.
+
 #### Transfer
 
 In a terminal, run `python transfer.py`.
