@@ -4,6 +4,8 @@
 # Loading the previously mentioned info from a .env file in the same directory as this file
 
 import sys
+import tempfile
+import time
 
 from dotenv import load_dotenv
 from selenium.common.exceptions import *
@@ -67,6 +69,12 @@ def transfer_shares():
 
         print("Click submit")
         driver.find_element(By.ID, "cmdNext").click()
+
+        time.sleep(2)
+        screenshot_path = tempfile.mktemp(prefix = "transfer_", suffix=".png")
+        driver.save_screenshot(screenshot_path)
+        print(f"You can find a screenshot of your transaction at {screenshot_path}")
+
     except:
         # Need to add more specific exception catches
         print("Error?")
