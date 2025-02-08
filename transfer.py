@@ -3,69 +3,44 @@
 # DTC, company name, login info, and brokerage account number are needed
 # Loading the previously mentioned info from a .env file in the same directory as this file
 
-import os
 import sys
 
 from dotenv import load_dotenv
-from selenium import webdriver
 from selenium.common.exceptions import *
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
+from common import (
+    initialize_driver,
+    initialize_wait,
+    sign_in,
+    DTC,
+    ACCOUNT_NUMBER,
+    PASSWORD
+)
 
 # Load env variables from ".env" file in the same folder
 load_dotenv()
 
-# Your Computershare username
-USERNAME = os.getenv("USERNAME")
-
-# Your Computershare password
-PASSWORD = os.getenv("PASSWORD")
-
-# Your company name
-COMPANY_NAME = os.getenv("COMPANY_NAME")
-
-# DTC number for brokerage
-DTC = os.getenv("DTC")
-
-# Account number
-ACCOUNT_NUMBER = os.getenv("ACCOUNT_NUMBER")
-
-options = webdriver.ChromeOptions()
-options.add_argument("--headless=new")
-
 # Automatically get and cache the webdriver for Chrome
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+driver = initialize_driver()
+wait = initialize_wait(driver)
 
 
 # Function to transfer shares to another brokerage
 def transfer_shares():
-    wait = WebDriverWait(driver, 10)
-    driver.get("https://www-us.computershare.com/employee/login/selectcompany.aspx")
     try:
-        print("Sign in")
-        wait.until(expected_conditions.title_contains("Employee - Plans"))
-        driver.find_element(By.ID, "SearchName").send_keys(str(COMPANY_NAME))
-        driver.find_element(By.NAME, "submitform").click()
-        print("Select Employee login")
-        wait.until(expected_conditions.presence_of_element_located((By.XPATH, '//a[contains(@href,"Employee/Login")]')))
-        driver.find_element(By.XPATH, '//a[contains(@href,"Employee/Login")]').click()
-        wait.until(expected_conditions.presence_of_element_located((By.ID, "loginIDType")))
-        print("Choose Username login option")
-        select = Select(driver.find_element(By.ID, "loginIDType"))
-        select.select_by_visible_text("Username")
-        print("Input credentials")
-        driver.find_element(By.ID, "tempLoginID").send_keys(str(USERNAME))
-        driver.find_element(By.ID, "employeePIN").send_keys(str(PASSWORD))
-        print("Login")
-        driver.find_element(By.NAME, "sbmtBtn").click()
+        sign_in(wait, driver)
 
         print("Click Transact")
         wait.until(expected_conditions.presence_of_element_located((By.ID, "ctl01_primaryNavigation")))
         driver.find_element(By.XPATH, '//a[contains(@href,"Transactions")]').click()
+
+        print("Select ESPP holding (not dividends)")
+        wait.until(expected_conditions.presence_of_element_located((By.ID, "EmployeePlanId")))
+        select = Select(driver.find_element(By.ID, "EmployeePlanId"))
+        select.select_by_value("1")
+
         print("Click transfer button")
         wait.until(expected_conditions.presence_of_element_located((By.CLASS_NAME, "DlgLnk")))
         driver.find_element(By.XPATH, '//a[contains(@title,"Transfer to Broker")]').click()

@@ -12,7 +12,8 @@ Transfer or sell all ESPP shares from Computershare to another brokerage or acco
 ---
 
 ### Installation/Setup:
-* Install dependencies using `pip install -r requirements.txt`
+* Optional: `uv venv && source .venv/bin/activate`
+* Install dependencies using `pip install -r requirements.txt` (or `uv pip sync requirements.txt`)
 * Install Chrome
 
 #### Variables:
