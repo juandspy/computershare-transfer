@@ -27,7 +27,7 @@ def main():
     previous_values = read_previous_values()
     print("Stored shares:")
     pprint(previous_values)
-    print("-"*20)
+    print("-"*5)
 
     driver = initialize_driver()
     wait = initialize_wait(driver)
