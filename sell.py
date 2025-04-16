@@ -76,6 +76,7 @@ def sell_shares():
         driver.find_element(By.XPATH, '//input[contains(@value,"Next")]').click()
 
         print("Click All shares")
+        wait.until(expected_conditions.presence_of_element_located((By.ID, "sharePortion0")))
         driver.find_element(By.XPATH, '//input[@value="all" and @name="sharePortion"]').click()
         print("Click Electronic payment")
         driver.find_element(By.XPATH, '//input[@value="D" and @name="proceedsDistributionMethod"]').click()
