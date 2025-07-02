@@ -1,5 +1,5 @@
-# computershare-transfer
-Transfer or sell all ESPP shares from Computershare to another brokerage or account.
+# EquatePlus-transfer
+Transfer or sell all ESPP shares from EquatePlus to another brokerage or account.
 
 ---
 
@@ -19,22 +19,14 @@ Transfer or sell all ESPP shares from Computershare to another brokerage or acco
 #### Variables:
 These are environment variables for a transfer:
 
-* `USERNAME` : Computershare username
-* `PASSWORD` : Computershare password
-* `COMPANY_NAME` : Company name
-* `DTC` : DTC for brokerage
-* `ACCOUNT_NUMBER` : Account number for brokerage
-
-`DTC` and `ACCOUNT_NUMBER` are not needed for selling.
+* `USERNAME` : EquatePlus username
+* `PASSWORD` : EquatePlus password
 
 You can define using whatever method works best for you (`export` in `.bash_profile`, define in Python console, or just define in the script), or you can create a .env file in the following format:
 ```
 # .env file
 USERNAME=username1
 PASSWORD=password
-COMPANY_NAME=company
-DTC=0000
-ACCOUNT_NUMBER=X12345678
 ```
 ---
 
@@ -60,6 +52,8 @@ crontab -e
 
 In a terminal, run `python transfer.py`.
 Selenium will open a headless Chrome window (aka you won't see anything) and automate the transfer of all whole shares to your chosen brokerage.
+
+You must first configure a brokerage account with `DTC` and `ACCOUNT_NUMBER` in the UI.
 
 #### Sell
 

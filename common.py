@@ -4,22 +4,18 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 
 
 # Load env variables from ".env" file in the same folder
-load_dotenv()
+load_dotenv(override=True)
 
-# Your Computershare username
+# Your EquatePlus username
 USERNAME = os.getenv("USERNAME")
 
-# Your Computershare password
+# Your EquatePlus password
 PASSWORD = os.getenv("PASSWORD")
-
-# Your company name
-COMPANY_NAME = os.getenv("COMPANY_NAME")
 
 # DTC number for brokerage
 DTC = os.getenv("DTC")
@@ -30,13 +26,14 @@ ACCOUNT_NUMBER = os.getenv("ACCOUNT_NUMBER")
 
 def initialize_driver():
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
     # Automatically get and cache the webdriver for Chrome
     driver = webdriver.Chrome(
         service=Service(ChromeDriverManager().install()), options=options
     )
-    driver.get("https://www-us.computershare.com/employee/login/selectcompany.aspx")
+    driver.get("http://www.na.equateplus.com/")
     return driver
+
 
 def initialize_wait(driver):
     return WebDriverWait(driver, 10)
@@ -44,21 +41,32 @@ def initialize_wait(driver):
 
 def sign_in(wait, driver):
     print("Sign in")
-    wait.until(expected_conditions.title_contains("Employee - Plans"))
-    driver.find_element(By.ID, "SearchName").send_keys(str(COMPANY_NAME))
-    driver.find_element(By.NAME, "submitform").click()
+    wait.until(
+        expected_conditions.title_contains(
+            "EquatePlus | Employee Share Plan Participant Login"
+        )
+    )
 
-    print("Select Employee login")
-    wait.until(expected_conditions.presence_of_element_located((By.XPATH, '//a[contains(@href,"Employee/Login")]')))
-    driver.find_element(By.XPATH, '//a[contains(@href,"Employee/Login")]').click()
-    wait.until(expected_conditions.presence_of_element_located((By.ID, "loginIDType")))
+    print("Input username")
+    driver.find_element(By.ID, "eqUserId").send_keys(str(USERNAME))
+    print("Click Continue button")
+    driver.find_element(By.ID, "defaultButton").click()
 
-    print("Choose Username login option")
-    select = Select(driver.find_element(By.ID, "loginIDType"))
-    select.select_by_visible_text("Username")
+    print("Input password")
+    wait.until(expected_conditions.presence_of_element_located((By.ID, "eqPwdId")))
+    driver.find_element(By.ID, "eqPwdId").send_keys(str(PASSWORD))
 
-    print("Input credentials")
-    driver.find_element(By.ID, "tempLoginID").send_keys(str(USERNAME))
-    driver.find_element(By.ID, "employeePIN").send_keys(str(PASSWORD))
     print("Login")
-    driver.find_element(By.NAME, "sbmtBtn").click()
+    driver.find_element(By.ID, "defaultButton").click()
+
+    wait.until(
+        expected_conditions.presence_of_element_located(
+            (By.ID, "portfolioandsharepriceandplans")
+        )
+    )
+
+
+if __name__ == "__main__":
+    driver = initialize_driver()
+    wait = initialize_wait(driver)
+    sign_in(wait, driver)
