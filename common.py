@@ -11,10 +11,10 @@ from selenium.webdriver.common.by import By
 # Load env variables from ".env" file in the same folder
 load_dotenv(override=True)
 
-# Your Computershare username
+# Your EquatePlus username
 USERNAME = os.getenv("USERNAME")
 
-# Your Computershare password
+# Your EquatePlus password
 PASSWORD = os.getenv("PASSWORD")
 
 # DTC number for brokerage
