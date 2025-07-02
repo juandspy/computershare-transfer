@@ -26,7 +26,7 @@ ACCOUNT_NUMBER = os.getenv("ACCOUNT_NUMBER")
 
 def initialize_driver():
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless=new")
+    options.add_argument("--headless=new")
     # Automatically get and cache the webdriver for Chrome
     driver = webdriver.Chrome(
         service=Service(ChromeDriverManager().install()), options=options
