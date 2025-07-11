@@ -7,5 +7,4 @@
 def sell_shares():
     raise NotImplementedError("Not implemented for EquatePlus")
 
-
 sell_shares()
