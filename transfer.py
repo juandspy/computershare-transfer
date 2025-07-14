@@ -159,7 +159,7 @@ def transfer_shares():
         time.sleep(2)
 
         click_button_robustly(
-            '//button[@class="PrincipalButton" and text()="Next"]', "Next button"
+            '//button[@class="PrincipalButton Next" and text()="Next"]', "Next button"
         )
 
         print("Click Place order button")
