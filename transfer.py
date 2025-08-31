@@ -117,6 +117,7 @@ def transfer_shares():
 
         # get total number of shares
         print("Get total number of shares")
+        time.sleep(4)
         wait.until(
             expected_conditions.presence_of_element_located(
                 (By.CLASS_NAME, "ActionableQuantityValue")
