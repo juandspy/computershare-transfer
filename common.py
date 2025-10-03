@@ -6,7 +6,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import ElementClickInterceptedException
 import time
 
 # Load env variables from ".env" file in the same folder
@@ -146,8 +145,7 @@ def ignore_security_configuration(wait, driver):
         )
     )
     print("Button found")
-    accept_weaker_security = driver.find_element(By.XPATH, '//a[@class="L3" and contains(text(), "I accept weaker security")]')
-    accept_weaker_security.click()
+    click_button_robustly(driver, '//a[@class="L3" and contains(text(), "I accept weaker security")]', "I accept weaker security button")
     print("Button clicked")
 
     click_button_robustly(driver, '//button[@class="PrincipalButton" and @id="Done"]', "Done button")
