@@ -177,7 +177,7 @@ def download_and_move_payslip(tile_content, current_date):
 
     # Wait for the download to complete (assumes default download dir and browser config)
     dt = datetime.strptime(current_date, "%B %Y")
-    filename = dt.strftime("%m_%Y.pdf")
+    filename = dt.strftime("%Y_%m.pdf")
     print(f"Payslip will be saved as {PATH_TO_PAYSLIPS}{filename}")
 
     latest_file = get_latest_file(PATH_TO_DOWNLOADS)
