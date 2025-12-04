@@ -29,7 +29,7 @@ PATH_TO_DOWNLOADS = "/Users/jdiazsua/Downloads/"
 def initialize_driver():
     """Initialize Chrome driver for ADP website"""
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
     # Automatically get and cache the webdriver for Chrome
     driver = webdriver.Chrome(
         service=Service(ChromeDriverManager().install()), options=options
@@ -85,7 +85,34 @@ def sign_in(wait, driver):
     print("Login submitted")
 
     # Wait until the next page is rendered after sign in
-    wait.until(lambda d: d.title == "MultiDocs")
+    wait.until(lambda d: "MultiDocs" in d.title)
+
+def select_language(wait, driver, lang="Inglés", btn_lang="EN"):
+    """Select language from the dropdown menu."""
+    # Wait for and click the language dropdown button
+    dropdown_btn = wait.until(
+        expected_conditions.element_to_be_clickable(
+            (By.ID, "DDO_LANGUAGESICONS_MPAGEContainer_btnGroupDrop")
+        )
+    )
+
+    # Find the correct <span> within the dropdown button and return if it matches btn_lang
+    span_elements = dropdown_btn.find_elements(By.TAG_NAME, "span")
+    for span in span_elements:
+        if span.text.strip() == btn_lang:
+            return
+
+    dropdown_btn.click()
+    
+    # Wait for the dropdown menu to be visible and find the language option
+    language_option = wait.until(
+        expected_conditions.element_to_be_clickable(
+            (By.XPATH, f"//ul[@role='menu']//a[contains(., '{lang}')]")
+        )
+    )
+    language_option.click()
+    
+    print(f"Language selected: {lang}")
 
 
 def read_previous_payslip_date():
@@ -107,6 +134,16 @@ def count_items_in_db():
 
 def navigate_to_payment_tile(wait, driver):
     """Navigate to the payment tile and return the tile content element."""
+    #Navigate to "My Documents"
+    documents_tile = driver.find_element(By.XPATH, "//a[@title='My Documents' and text()='My Documents']")
+    documents_tile.click()
+
+    # Wait for and switch to the iframe
+    iframe = wait.until(
+        expected_conditions.presence_of_element_located((By.ID, "W0018IFRAME"))
+    )
+    driver.switch_to.frame(iframe)
+
     # Wait for the Employee tile to be present
     wait.until(
         expected_conditions.presence_of_element_located(
@@ -233,6 +270,7 @@ def get_driver():
 
 
 if __name__ == "__main__":
+    print("Date:", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     if not ADP_USERNAME or not ADP_PASSWORD:
         print("Error: ADP_USERNAME and ADP_PASSWORD environment variables must be set")
         exit(1)
@@ -240,6 +278,7 @@ if __name__ == "__main__":
     driver = initialize_driver()
     wait = initialize_wait(driver)
     sign_in(wait, driver)
+    select_language(wait, driver)
     get_last_payslip(wait, driver)
     
     # Keep the browser open for a moment to see the result
